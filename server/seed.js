@@ -24,7 +24,7 @@ const sampleFoods = [
     price: 60000,
     quantity: 40,
     description: 'Món bún bò đặc sản cố đô Huế với hương vị đậm đà cay nồng của sả ớt và mắm ruốc truyền thống.',
-    imageUrl: 'https://images.unsplash.com/photo-1569058242252-623df46b5025?w=500',
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/0/00/Bun-Bo-Hue-from-Huong-Giang-2011.jpg',
   },
   {
     foodId: 'F03',
@@ -35,7 +35,7 @@ const sampleFoods = [
     price: 50000,
     quantity: 65,
     description: 'Cơm tấm đặc sản Sài Gòn với sườn nướng than thơm lừng, chả trứng béo ngậy và nước mắm chua ngọt đậm đà.',
-    imageUrl: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500',
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/8/8e/Com-Tam-2008.jpg',
   },
   {
     foodId: 'F04',
@@ -46,7 +46,7 @@ const sampleFoods = [
     price: 35000,
     quantity: 80,
     description: 'Món khai vị thanh mát gồm tôm thịt luộc cuộn cùng rau sống tươi giòn và bún, chấm cùng tương đậu phộng.',
-    imageUrl: 'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=500',
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/e/e9/Spring_rolls_with_peanut_sauce.jpg',
   },
 ];
 
