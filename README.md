@@ -97,6 +97,25 @@
    ```
    Kiểm tra trạng thái tại: `http://localhost:5000/health`
 
+### Chạy Frontend bằng Docker
+
+1. **Kéo image từ Docker Hub:**
+   ```bash
+   docker pull trangiahan2005/frontend:latest
+   ```
+
+2. **Chạy container frontend:**
+   ```bash
+   docker run -d --name food-frontend -p 80:80 trangiahan2005/frontend:latest
+   ```
+   Truy cập giao diện tại: `http://localhost:80`
+
+### Chạy toàn bộ hệ thống bằng Docker Compose
+
+```bash
+docker compose up -d
+```
+
 ---
 
 ## 4. Bảng thông tin nộp bài
@@ -105,7 +124,7 @@
 |---|---|
 | **Link_GitHub** | https://github.com/Han2005-0209/236894_TranGiaHan |
 | **Link_Docker_Backend** | https://hub.docker.com/r/trangiahan2005/backend |
-| **Link_Docker_Frontend** | Sẽ cập nhật sau khi push Câu 6 |
+| **Link_Docker_Frontend** | https://hub.docker.com/r/trangiahan2005/frontend |
 | **Link_Render_App** | Sẽ cập nhật sau khi hoàn thành triển khai |
 | **Link_Render_API** | Sẽ cập nhật sau khi hoàn thành triển khai |
 | **Link_Data_MongoDB** | Database: 236894_TranGiaHan, Collection: foods |
