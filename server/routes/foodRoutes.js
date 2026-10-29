@@ -65,197 +65,151 @@ router.get('/:id', async (req, res) => {
       data: food,
     });
   } catch (error) {
-    console.error('Error fetching food by ID:', error.message);
+    console.error('Error fetching food detail:', error.message);
     return res.status(500).json({
       success: false,
-      message: 'Lỗi máy chủ khi tìm kiếm món ăn',
+      message: 'Lỗi máy chủ khi lấy thông tin chi tiết món ăn',
       error: error.message,
     });
   }
 });
 
 // POST /api/foods
-// Thêm món ăn mới: kiểm tra dữ liệu đầu vào và ngăn trùng foodId
+// Thêm món ăn mới với đầy đủ xác thực các trường bắt buộc và chống trùng foodId
 router.post('/', async (req, res) => {
   try {
     const { foodId, name, category, cuisine, ingredients, price, quantity, description, imageUrl } = req.body;
 
-    // 1. Kiểm tra các trường bắt buộc
-    if (!foodId || !name || !category || !cuisine || price === undefined || price === null) {
+    // Validate required fields
+    if (!foodId || !name || !category || !cuisine || price === undefined) {
       return res.status(400).json({
         success: false,
-        message: 'Dữ liệu không hợp lệ: foodId, name, category, cuisine, price là các trường bắt buộc',
+        message: 'Vui lòng cung cấp đầy đủ: foodId, name, category, cuisine, price',
       });
     }
 
-    const cleanFoodId = String(foodId).trim().toUpperCase();
-    if (!cleanFoodId) {
-      return res.status(400).json({
-        success: false,
-        message: 'Mã món ăn foodId không được để trống',
-      });
-    }
+    const cleanFoodId = foodId.trim().toUpperCase();
 
-    // 2. Kiểm tra không cho phép trùng mã món ăn foodId
+    // Check duplicate foodId
     const existing = await Food.findOne({ foodId: cleanFoodId });
     if (existing) {
       return res.status(400).json({
         success: false,
-        message: `Mã món ăn '${cleanFoodId}' đã tồn tại trong hệ thống. Vui lòng chọn mã khác`,
+        message: `Mã món ăn '${cleanFoodId}' đã tồn tại trong hệ thống. Vui lòng chọn mã khác.`,
       });
     }
 
-    // 3. Chuẩn hóa ingredients (hỗ trợ cả mảng và chuỗi ngăn cách bởi dấu phẩy)
-    let parsedIngredients = [];
+    // Process ingredients list
+    let processedIngredients = [];
     if (Array.isArray(ingredients)) {
-      parsedIngredients = ingredients.map(i => String(i).trim()).filter(Boolean);
-    } else if (typeof ingredients === 'string' && ingredients.trim()) {
-      parsedIngredients = ingredients.split(',').map(i => i.trim()).filter(Boolean);
+      processedIngredients = ingredients;
+    } else if (typeof ingredients === 'string' && ingredients.trim() !== '') {
+      processedIngredients = ingredients.split(',').map(s => s.trim()).filter(Boolean);
     }
 
     const newFood = new Food({
       foodId: cleanFoodId,
-      name: String(name).trim(),
-      category: String(category).trim(),
-      cuisine: String(cuisine).trim(),
-      ingredients: parsedIngredients,
+      name: name.trim(),
+      category: category.trim(),
+      cuisine: cuisine.trim(),
+      ingredients: processedIngredients,
       price: Number(price),
-      quantity: Number(quantity) >= 0 ? Number(quantity) : 0,
-      description: description ? String(description).trim() : '',
-      imageUrl: imageUrl ? String(imageUrl).trim() : '',
+      quantity: quantity !== undefined ? Number(quantity) : 0,
+      description: description ? description.trim() : '',
+      imageUrl: imageUrl ? imageUrl.trim() : '',
     });
 
-    const savedFood = await newFood.save();
+    const saved = await newFood.save();
     return res.status(201).json({
       success: true,
       message: 'Thêm món ăn mới thành công',
-      data: savedFood,
+      data: saved,
     });
   } catch (error) {
     console.error('Error creating food:', error.message);
     if (error.code === 11000) {
       return res.status(400).json({
         success: false,
-        message: 'Trùng mã món ăn foodId',
-        error: error.message,
+        message: 'Mã món ăn (foodId) đã tồn tại',
       });
     }
-    if (error.name === 'ValidationError') {
-      return res.status(400).json({
-        success: false,
-        message: 'Lỗi kiểm tra tính hợp lệ của dữ liệu',
-        error: error.message,
-      });
-    }
-    return res.status(500).json({
+    return res.status(400).json({
       success: false,
-      message: 'Lỗi máy chủ khi tạo món ăn',
-      error: error.message,
+      message: error.message || 'Lỗi khi tạo mới món ăn',
     });
   }
 });
 
 // PUT /api/foods/:id
-// Cập nhật thông tin món ăn
+// Cập nhật thông tin món ăn theo id (ObjectId hoặc foodId)
 router.put('/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const { foodId, name, category, cuisine, ingredients, price, quantity, description, imageUrl } = req.body;
+    const { name, category, cuisine, ingredients, price, quantity, description, imageUrl } = req.body;
 
-    let food = null;
+    let filter = {};
     if (id.match(/^[0-9a-fA-F]{24}$/)) {
-      food = await Food.findById(id);
-    }
-    if (!food) {
-      food = await Food.findOne({ foodId: id.toUpperCase() });
+      filter = { _id: id };
+    } else {
+      filter = { foodId: id.toUpperCase() };
     }
 
-    if (!food) {
+    let processedIngredients = undefined;
+    if (ingredients !== undefined) {
+      if (Array.isArray(ingredients)) {
+        processedIngredients = ingredients;
+      } else if (typeof ingredients === 'string') {
+        processedIngredients = ingredients.split(',').map(s => s.trim()).filter(Boolean);
+      }
+    }
+
+    const updateData = {};
+    if (name !== undefined) updateData.name = name.trim();
+    if (category !== undefined) updateData.category = category.trim();
+    if (cuisine !== undefined) updateData.cuisine = cuisine.trim();
+    if (processedIngredients !== undefined) updateData.ingredients = processedIngredients;
+    if (price !== undefined) updateData.price = Number(price);
+    if (quantity !== undefined) updateData.quantity = Number(quantity);
+    if (description !== undefined) updateData.description = description.trim();
+    if (imageUrl !== undefined) updateData.imageUrl = imageUrl.trim();
+
+    const updated = await Food.findOneAndUpdate(filter, updateData, { new: true, runValidators: true });
+
+    if (!updated) {
       return res.status(404).json({
         success: false,
         message: `Không tìm thấy món ăn với định danh '${id}' để cập nhật`,
       });
     }
 
-    // Nếu đổi foodId, kiểm tra trùng
-    if (foodId && foodId.trim().toUpperCase() !== food.foodId) {
-      const cleanNewId = foodId.trim().toUpperCase();
-      const duplicate = await Food.findOne({ foodId: cleanNewId });
-      if (duplicate) {
-        return res.status(400).json({
-          success: false,
-          message: `Không thể đổi sang mã '${cleanNewId}' vì mã này đã tồn tại`,
-        });
-      }
-      food.foodId = cleanNewId;
-    }
-
-    if (name !== undefined) food.name = String(name).trim();
-    if (category !== undefined) food.category = String(category).trim();
-    if (cuisine !== undefined) food.cuisine = String(cuisine).trim();
-    if (price !== undefined) {
-      const numPrice = Number(price);
-      if (numPrice < 0) {
-        return res.status(400).json({ success: false, message: 'Giá bán không được âm' });
-      }
-      food.price = numPrice;
-    }
-    if (quantity !== undefined) {
-      const numQty = Number(quantity);
-      if (numQty < 0) {
-        return res.status(400).json({ success: false, message: 'Số lượng không được âm' });
-      }
-      food.quantity = numQty;
-    }
-    if (description !== undefined) food.description = String(description).trim();
-    if (imageUrl !== undefined) food.imageUrl = String(imageUrl).trim();
-
-    if (ingredients !== undefined) {
-      if (Array.isArray(ingredients)) {
-        food.ingredients = ingredients.map(i => String(i).trim()).filter(Boolean);
-      } else if (typeof ingredients === 'string') {
-        food.ingredients = ingredients.split(',').map(i => i.trim()).filter(Boolean);
-      }
-    }
-
-    const updatedFood = await food.save();
     return res.status(200).json({
       success: true,
-      message: 'Cập nhật món ăn thành công',
-      data: updatedFood,
+      message: 'Cập nhật thông tin món ăn thành công',
+      data: updated,
     });
   } catch (error) {
     console.error('Error updating food:', error.message);
-    if (error.name === 'ValidationError') {
-      return res.status(400).json({
-        success: false,
-        message: 'Dữ liệu cập nhật không hợp lệ',
-        error: error.message,
-      });
-    }
-    return res.status(500).json({
+    return res.status(400).json({
       success: false,
-      message: 'Lỗi máy chủ khi cập nhật món ăn',
-      error: error.message,
+      message: error.message || 'Lỗi khi cập nhật món ăn',
     });
   }
 });
 
 // DELETE /api/foods/:id
-// Xóa món ăn
+// Xóa một món ăn khỏi hệ thống
 router.delete('/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    let food = null;
-
+    let filter = {};
     if (id.match(/^[0-9a-fA-F]{24}$/)) {
-      food = await Food.findByIdAndDelete(id);
-    }
-    if (!food) {
-      food = await Food.findOneAndDelete({ foodId: id.toUpperCase() });
+      filter = { _id: id };
+    } else {
+      filter = { foodId: id.toUpperCase() };
     }
 
-    if (!food) {
+    const deleted = await Food.findOneAndDelete(filter);
+    if (!deleted) {
       return res.status(404).json({
         success: false,
         message: `Không tìm thấy món ăn với định danh '${id}' để xóa`,
@@ -264,8 +218,8 @@ router.delete('/:id', async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      message: `Đã xóa thành công món ăn '${food.name}' (Mã: ${food.foodId})`,
-      data: food,
+      message: `Đã xóa thành công món ăn '${deleted.name}' (${deleted.foodId})`,
+      data: deleted,
     });
   } catch (error) {
     console.error('Error deleting food:', error.message);

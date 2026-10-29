@@ -1,8 +1,8 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './App.css';
 
-// Cáº¥u hĂ¬nh URL Backend linh hoáº¡t tá»« biáº¿n mĂ´i trÆ°á»ng Ä‘Ă¡m mĂ¢y hoáº·c fallback
+// Cấu hình URL Backend linh hoạt từ biến môi trường đám mây hoặc fallback
 const API_BASE_URL = import.meta.env.VITE_API_URL
   ? `${import.meta.env.VITE_API_URL.replace(/\/$/, '')}/api/foods`
   : '/api/foods';
@@ -10,8 +10,8 @@ const API_BASE_URL = import.meta.env.VITE_API_URL
 const initialFormState = {
   foodId: '',
   name: '',
-  category: 'MĂ³n chĂ­nh',
-  cuisine: 'Miá»n Nam',
+  category: 'Món chính',
+  cuisine: 'Miền Nam',
   ingredients: '',
   price: '',
   quantity: '',
@@ -62,8 +62,8 @@ function App() {
         setFoods(res.data.data || []);
       }
     } catch (err) {
-      console.error('Lá»—i khi táº£i dá»¯ liá»‡u mĂ³n Äƒn:', err);
-      setError(err.response?.data?.message || 'KhĂ´ng thá»ƒ káº¿t ná»‘i Ä‘áº¿n mĂ¡y chá»§ API');
+      console.error('Lỗi khi tải dữ liệu món ăn:', err);
+      setError(err.response?.data?.message || 'Không thể kết nối đến máy chủ API');
     } finally {
       setLoading(false);
     }
@@ -97,8 +97,8 @@ function App() {
     setFormData({
       foodId: food.foodId || '',
       name: food.name || '',
-      category: food.category || 'MĂ³n chĂ­nh',
-      cuisine: food.cuisine || 'Miá»n Nam',
+      category: food.category || 'Món chính',
+      cuisine: food.cuisine || 'Miền Nam',
       ingredients: Array.isArray(food.ingredients) ? food.ingredients.join(', ') : (food.ingredients || ''),
       price: food.price || '',
       quantity: food.quantity !== undefined ? food.quantity : '',
@@ -129,17 +129,17 @@ function App() {
 
       if (isEditing) {
         const res = await axios.put(`${API_BASE_URL}/${editId}`, payload);
-        setSuccessMsg(res.data.message || 'Cáº­p nháº­t mĂ³n Äƒn thĂ nh cĂ´ng!');
+        setSuccessMsg(res.data.message || 'Cập nhật món ăn thành công!');
       } else {
         const res = await axios.post(API_BASE_URL, payload);
-        setSuccessMsg(res.data.message || 'ThĂªm mĂ³n Äƒn má»›i thĂ nh cĂ´ng!');
+        setSuccessMsg(res.data.message || 'Thêm món ăn mới thành công!');
       }
 
       setShowFormModal(false);
       fetchFoods(searchKeyword);
     } catch (err) {
-      console.error('Lá»—i lÆ°u mĂ³n Äƒn:', err);
-      setError(err.response?.data?.message || 'Thao tĂ¡c khĂ´ng thĂ nh cĂ´ng, vui lĂ²ng kiá»ƒm tra láº¡i dá»¯ liá»‡u');
+      console.error('Lỗi lưu món ăn:', err);
+      setError(err.response?.data?.message || 'Thao tác không thành công, vui lòng kiểm tra lại dữ liệu');
     } finally {
       setLoading(false);
     }
@@ -147,20 +147,20 @@ function App() {
 
   // Delete Food
   const handleDeleteFood = async (id, foodName, foodId) => {
-    if (!window.confirm(`Báº¡n cĂ³ cháº¯c cháº¯n muá»‘n xĂ³a mĂ³n Äƒn '${foodName}' (MĂ£: ${foodId}) khĂ´ng?`)) {
+    if (!window.confirm(`Bạn có chắc chắn muốn xóa món ăn '${foodName}' (Mã: ${foodId}) không?`)) {
       return;
     }
     setLoading(true);
     try {
       const res = await axios.delete(`${API_BASE_URL}/${id}`);
-      setSuccessMsg(res.data.message || `ÄĂ£ xĂ³a thĂ nh cĂ´ng mĂ³n Äƒn '${foodName}'!`);
+      setSuccessMsg(res.data.message || `Đã xóa thành công món ăn '${foodName}'!`);
       if (selectedFood && (selectedFood._id === id || selectedFood.foodId === id)) {
         setSelectedFood(null);
       }
       fetchFoods(searchKeyword);
     } catch (err) {
-      console.error('Lá»—i xĂ³a mĂ³n Äƒn:', err);
-      setError(err.response?.data?.message || 'KhĂ´ng thá»ƒ xĂ³a mĂ³n Äƒn');
+      console.error('Lỗi xóa món ăn:', err);
+      setError(err.response?.data?.message || 'Không thể xóa món ăn');
     } finally {
       setLoading(false);
     }
@@ -171,11 +171,11 @@ function App() {
       {/* Header */}
       <header className="app-header">
         <div className="header-brand">
-          <h1>Há»‡ Thá»‘ng Quáº£n LĂ½ MĂ³n Ä‚n</h1>
-          <p className="subtitle">Há»c pháº§n Äiá»‡n toĂ¡n Ä‘Ă¡m mĂ¢y â€” Tráº§n Gia HĂ¢n (MSSV: 236894 - Lá»›p: DH23TIN08)</p>
+          <h1>Hệ Thống Quản Lý Món Ăn</h1>
+          <p className="subtitle">Học phần Điện toán đám mây — Trần Gia Hân (MSSV: 236894 - Lớp: DH23TIN08)</p>
         </div>
         <button className="btn btn-primary" onClick={handleOpenCreate}>
-          + ThĂªm MĂ³n Ä‚n Má»›i
+          + Thêm Món Ăn Mới
         </button>
       </header>
 
@@ -188,31 +188,31 @@ function App() {
         <form onSubmit={handleSearchSubmit} className="search-form">
           <input
             type="text"
-            placeholder="TĂ¬m kiáº¿m theo tĂªn mĂ³n Äƒn, loáº¡i mĂ³n, hoáº·c vĂ¹ng miá»n..."
+            placeholder="Tìm kiếm theo tên món ăn, loại món, hoặc vùng miền..."
             value={searchKeyword}
             onChange={(e) => setSearchKeyword(e.target.value)}
             className="search-input"
           />
-          <button type="submit" className="btn btn-search">TĂ¬m Kiáº¿m</button>
+          <button type="submit" className="btn btn-search">Tìm Kiếm</button>
           {searchKeyword && (
             <button type="button" onClick={handleResetSearch} className="btn btn-secondary">
-              Äáº·t láº¡i
+              Đặt lại
             </button>
           )}
         </form>
         <div className="total-badge">
-          Tá»•ng sá»‘: <strong>{foods.length}</strong> mĂ³n Äƒn
+          Tổng số: <strong>{foods.length}</strong> món ăn
         </div>
       </section>
 
       {/* Loading state */}
-      {loading && <div className="loading-state"><div className="spinner"></div> Äang táº£i dá»¯ liá»‡u...</div>}
+      {loading && <div className="loading-state"><div className="spinner"></div> Đang tải dữ liệu...</div>}
 
       {/* Food Cards Grid */}
       <main className="food-grid">
         {!loading && foods.length === 0 && (
           <div className="empty-state">
-            <p>KhĂ´ng tĂ¬m tháº¥y mĂ³n Äƒn nĂ o phĂ¹ há»£p vá»›i yĂªu cáº§u tĂ¬m kiáº¿m.</p>
+            <p>Không tìm thấy món ăn nào phù hợp với yêu cầu tìm kiếm.</p>
           </div>
         )}
 
@@ -230,7 +230,7 @@ function App() {
                   }}
                 />
               ) : (
-                <div className="food-placeholder">MĂ³n Ä‚n</div>
+                <div className="food-placeholder">Món Ăn</div>
               )}
               <span className="badge-food-id">{food.foodId}</span>
             </div>
@@ -242,7 +242,7 @@ function App() {
                 <span className="tag cuisine-tag">{food.cuisine}</span>
               </div>
               <p className="food-price">{Number(food.price).toLocaleString('vi-VN')} VND</p>
-              <p className="food-quantity">Sá»‘ lÆ°á»£ng cĂ²n: <strong>{food.quantity}</strong></p>
+              <p className="food-quantity">Số lượng còn: <strong>{food.quantity}</strong></p>
               {food.description && (
                 <p className="food-desc-preview">{food.description}</p>
               )}
@@ -253,31 +253,31 @@ function App() {
                 className="btn btn-sm btn-info"
                 onClick={() => setSelectedFood(food)}
               >
-                Chi tiáº¿t
+                Chi tiết
               </button>
               <button
                 className="btn btn-sm btn-warning"
                 onClick={() => handleOpenEdit(food)}
               >
-                Sá»­a
+                Sửa
               </button>
               <button
                 className="btn btn-sm btn-danger"
                 onClick={() => handleDeleteFood(food._id || food.foodId, food.name, food.foodId)}
               >
-                XĂ³a
+                Xóa
               </button>
             </div>
           </div>
         ))}
       </main>
 
-      {/* Modal Xem Chi Tiáº¿t */}
+      {/* Modal Xem Chi Tiết */}
       {selectedFood && (
         <div className="modal-overlay" onClick={() => setSelectedFood(null)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
-              <h2>Chi Tiáº¿t MĂ³n Ä‚n: {selectedFood.name}</h2>
+              <h2>Chi Tiết Món Ăn: {selectedFood.name}</h2>
               <button className="btn-close" onClick={() => setSelectedFood(null)}>&times;</button>
             </div>
             <div className="modal-body">
@@ -287,31 +287,31 @@ function App() {
               <table className="detail-table">
                 <tbody>
                   <tr>
-                    <th>MĂ£ mĂ³n Äƒn:</th>
+                    <th>Mã món ăn:</th>
                     <td><strong>{selectedFood.foodId}</strong></td>
                   </tr>
                   <tr>
-                    <th>TĂªn mĂ³n Äƒn:</th>
+                    <th>Tên món ăn:</th>
                     <td>{selectedFood.name}</td>
                   </tr>
                   <tr>
-                    <th>Loáº¡i mĂ³n:</th>
+                    <th>Loại món:</th>
                     <td>{selectedFood.category}</td>
                   </tr>
                   <tr>
-                    <th>áº¨m thá»±c / VĂ¹ng miá»n:</th>
+                    <th>Ẩm thực / Vùng miền:</th>
                     <td>{selectedFood.cuisine}</td>
                   </tr>
                   <tr>
-                    <th>GiĂ¡ bĂ¡n:</th>
+                    <th>Giá bán:</th>
                     <td><strong className="text-price">{Number(selectedFood.price).toLocaleString('vi-VN')} VND</strong></td>
                   </tr>
                   <tr>
-                    <th>Sá»‘ lÆ°á»£ng hiá»‡n cĂ³:</th>
+                    <th>Số lượng hiện có:</th>
                     <td>{selectedFood.quantity}</td>
                   </tr>
                   <tr>
-                    <th>NguyĂªn liá»‡u:</th>
+                    <th>Nguyên liệu:</th>
                     <td>
                       {Array.isArray(selectedFood.ingredients) && selectedFood.ingredients.length > 0 ? (
                         <div className="ingredient-list">
@@ -320,53 +320,53 @@ function App() {
                           ))}
                         </div>
                       ) : (
-                        'ChÆ°a cáº­p nháº­t nguyĂªn liá»‡u'
+                        'Chưa cập nhật nguyên liệu'
                       )}
                     </td>
                   </tr>
                   <tr>
-                    <th>MĂ´ táº£:</th>
-                    <td>{selectedFood.description || 'KhĂ´ng cĂ³ mĂ´ táº£'}</td>
+                    <th>Mô tả:</th>
+                    <td>{selectedFood.description || 'Không có mô tả'}</td>
                   </tr>
                 </tbody>
               </table>
             </div>
             <div className="modal-footer">
-              <button className="btn btn-secondary" onClick={() => setSelectedFood(null)}>ÄĂ³ng</button>
-              <button className="btn btn-warning" onClick={() => { const f = selectedFood; setSelectedFood(null); handleOpenEdit(f); }}>Chá»‰nh sá»­a</button>
+              <button className="btn btn-secondary" onClick={() => setSelectedFood(null)}>Đóng</button>
+              <button className="btn btn-warning" onClick={() => { const f = selectedFood; setSelectedFood(null); handleOpenEdit(f); }}>Chỉnh sửa</button>
             </div>
           </div>
         </div>
       )}
 
-      {/* Modal ThĂªm / Sá»­a MĂ³n Ä‚n */}
+      {/* Modal Thêm / Sửa Món Ăn */}
       {showFormModal && (
         <div className="modal-overlay" onClick={() => setShowFormModal(false)}>
           <div className="modal-content modal-form" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
-              <h2>{isEditing ? `Cáº­p Nháº­t MĂ³n Ä‚n (${formData.foodId})` : 'ThĂªm MĂ³n Ä‚n Má»›i'}</h2>
+              <h2>{isEditing ? `Cập Nhật Món Ăn (${formData.foodId})` : 'Thêm Món Ăn Mới'}</h2>
               <button className="btn-close" onClick={() => setShowFormModal(false)}>&times;</button>
             </div>
             <form onSubmit={handleSubmitForm} className="food-form">
               <div className="form-row">
                 <div className="form-group">
-                  <label>MĂ£ mĂ³n Äƒn (foodId) *</label>
+                  <label>Mã món ăn (foodId) *</label>
                   <input
                     type="text"
                     required
-                    placeholder="VĂ­ dá»¥: F01, F02..."
+                    placeholder="Ví dụ: F01, F02..."
                     value={formData.foodId}
                     onChange={(e) => setFormData({ ...formData, foodId: e.target.value })}
                     disabled={isEditing}
                   />
-                  {isEditing && <small className="form-hint">MĂ£ mĂ³n Äƒn khĂ´ng Ä‘Æ°á»£c sá»­a</small>}
+                  {isEditing && <small className="form-hint">Mã món ăn không được sửa</small>}
                 </div>
                 <div className="form-group">
-                  <label>TĂªn mĂ³n Äƒn *</label>
+                  <label>Tên món ăn *</label>
                   <input
                     type="text"
                     required
-                    placeholder="VĂ­ dá»¥: Phá»Ÿ BĂ² TĂ¡i, CÆ¡m Táº¥m..."
+                    placeholder="Ví dụ: Phở Bò Tái, Cơm Tấm..."
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   />
@@ -375,51 +375,51 @@ function App() {
 
               <div className="form-row">
                 <div className="form-group">
-                  <label>Loáº¡i mĂ³n Äƒn *</label>
+                  <label>Loại món ăn *</label>
                   <select
                     value={formData.category}
                     onChange={(e) => setFormData({ ...formData, category: e.target.value })}
                   >
-                    <option value="MĂ³n chĂ­nh">MĂ³n chĂ­nh</option>
-                    <option value="MĂ³n nÆ°á»›c">MĂ³n nÆ°á»›c</option>
-                    <option value="MĂ³n khai vá»‹">MĂ³n khai vá»‹</option>
-                    <option value="MĂ³n trĂ¡ng miá»‡ng">MĂ³n trĂ¡ng miá»‡ng</option>
-                    <option value="Äá»“ uá»‘ng">Äá»“ uá»‘ng</option>
+                    <option value="Món chính">Món chính</option>
+                    <option value="Món nước">Món nước</option>
+                    <option value="Món khai vị">Món khai vị</option>
+                    <option value="Món tráng miệng">Món tráng miệng</option>
+                    <option value="Đồ uống">Đồ uống</option>
                   </select>
                 </div>
                 <div className="form-group">
-                  <label>áº¨m thá»±c / VĂ¹ng miá»n *</label>
+                  <label>Ẩm thực / Vùng miền *</label>
                   <select
                     value={formData.cuisine}
                     onChange={(e) => setFormData({ ...formData, cuisine: e.target.value })}
                   >
-                    <option value="Miá»n Báº¯c">Miá»n Báº¯c</option>
-                    <option value="Miá»n Trung">Miá»n Trung</option>
-                    <option value="Miá»n Nam">Miá»n Nam</option>
-                    <option value="Quá»‘c táº¿">Quá»‘c táº¿</option>
+                    <option value="Miền Bắc">Miền Bắc</option>
+                    <option value="Miền Trung">Miền Trung</option>
+                    <option value="Miền Nam">Miền Nam</option>
+                    <option value="Quốc tế">Quốc tế</option>
                   </select>
                 </div>
               </div>
 
               <div className="form-row">
                 <div className="form-group">
-                  <label>GiĂ¡ bĂ¡n (VND) *</label>
+                  <label>Giá bán (VND) *</label>
                   <input
                     type="number"
                     min="0"
                     required
-                    placeholder="VĂ­ dá»¥: 50000"
+                    placeholder="Ví dụ: 50000"
                     value={formData.price}
                     onChange={(e) => setFormData({ ...formData, price: e.target.value })}
                   />
                 </div>
                 <div className="form-group">
-                  <label>Sá»‘ lÆ°á»£ng hiá»‡n cĂ³ *</label>
+                  <label>Số lượng hiện có *</label>
                   <input
                     type="number"
                     min="0"
                     required
-                    placeholder="VĂ­ dá»¥: 50"
+                    placeholder="Ví dụ: 50"
                     value={formData.quantity}
                     onChange={(e) => setFormData({ ...formData, quantity: e.target.value })}
                   />
@@ -427,17 +427,17 @@ function App() {
               </div>
 
               <div className="form-group">
-                <label>Danh sĂ¡ch nguyĂªn liá»‡u (cĂ¡ch nhau bá»Ÿi dáº¥u pháº©y)</label>
+                <label>Danh sách nguyên liệu (cách nhau bởi dấu phẩy)</label>
                 <input
                   type="text"
-                  placeholder="VĂ­ dá»¥: Thá»‹t bĂ², BĂ¡nh phá»Ÿ, HĂ nh lĂ¡, Gá»«ng"
+                  placeholder="Ví dụ: Thịt bò, Bánh phở, Hành lá, Gừng"
                   value={formData.ingredients}
                   onChange={(e) => setFormData({ ...formData, ingredients: e.target.value })}
                 />
               </div>
 
               <div className="form-group">
-                <label>ÄÆ°á»ng dáº«n hĂ¬nh áº£nh (imageUrl)</label>
+                <label>Đường dẫn hình ảnh (imageUrl)</label>
                 <input
                   type="url"
                   placeholder="https://images.unsplash.com/..."
@@ -447,10 +447,10 @@ function App() {
               </div>
 
               <div className="form-group">
-                <label>MĂ´ táº£ mĂ³n Äƒn</label>
+                <label>Mô tả món ăn</label>
                 <textarea
                   rows="3"
-                  placeholder="MĂ´ táº£ chi tiáº¿t vá» hÆ°Æ¡ng vá»‹, cĂ¡ch cháº¿ biáº¿n..."
+                  placeholder="Mô tả chi tiết về hương vị, cách chế biến..."
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 />
@@ -458,10 +458,10 @@ function App() {
 
               <div className="modal-footer">
                 <button type="button" className="btn btn-secondary" onClick={() => setShowFormModal(false)}>
-                  Há»§y
+                  Hủy
                 </button>
                 <button type="submit" className="btn btn-primary" disabled={loading}>
-                  {loading ? 'Äang lÆ°u...' : (isEditing ? 'LÆ°u Thay Äá»•i' : 'ThĂªm MĂ³n Ä‚n')}
+                  {loading ? 'Đang lưu...' : (isEditing ? 'Lưu Thay Đổi' : 'Thêm Món Ăn')}
                 </button>
               </div>
             </form>

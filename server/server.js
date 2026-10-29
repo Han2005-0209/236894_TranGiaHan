@@ -38,13 +38,16 @@ app.get('/health', (req, res) => {
 // Root API information
 app.get('/', (req, res) => {
   return res.status(200).json({
-    message: 'Hệ thống API quản lý món ăn trên nền tảng đám mây',
-    student: 'Tran Gia Han - 236894 - DH23TIN08',
+    service: 'Food Management API',
+    author: 'Trần Gia Hân',
+    mssv: '236894',
+    class: 'DH23TIN08',
+    status: 'running',
     endpoints: {
       health: 'GET /health',
-      foods: 'GET /api/foods',
-      search: 'GET /api/foods?search=:keyword',
-      getFood: 'GET /api/foods/:id',
+      getAllFoods: 'GET /api/foods',
+      searchFoods: 'GET /api/foods?search=keyword',
+      getFoodById: 'GET /api/foods/:id',
       createFood: 'POST /api/foods',
       updateFood: 'PUT /api/foods/:id',
       deleteFood: 'DELETE /api/foods/:id',
@@ -52,46 +55,33 @@ app.get('/', (req, res) => {
   });
 });
 
-// Mount Routes
+// Routes
 app.use('/api/foods', foodRoutes);
 
 // 404 Handler
 app.use((req, res) => {
-  return res.status(404).json({
+  res.status(404).json({
     success: false,
-    message: `Đường dẫn '${req.originalUrl}' không tồn tại trên hệ thống API`,
+    message: `Đường dẫn ${req.originalUrl} không tồn tại trên hệ thống API`,
   });
 });
 
 // Global Error Handler
 app.use((err, req, res, next) => {
-  console.error('Unhandled server error:', err.stack);
-  return res.status(500).json({
+  console.error('Unhandled Server Error:', err.stack);
+  res.status(500).json({
     success: false,
-    message: 'Lỗi hệ thống nội bộ máy chủ',
+    message: 'Đã xảy ra lỗi máy chủ nội bộ',
     error: process.env.NODE_ENV === 'production' ? null : err.message,
   });
 });
 
-// Connect to MongoDB & Start Server
-const startServer = async () => {
-  try {
-    if (process.env.MONGODB_URI) {
-      await connectDB();
-    } else {
-      console.warn('CẢNH BÁO: MONGODB_URI chưa được thiết lập. Server khởi động nhưng chưa kết nối database.');
-    }
-  } catch (err) {
-    console.error('Không thể kết nối MongoDB:', err.message);
-  }
-
-  app.listen(PORT, '0.0.0.0', () => {
-    console.log(`[Server Ready] Backend chạy tại cổng ${PORT} (http://localhost:${PORT})`);
+// Start Server after connecting to MongoDB
+connectDB().then(() => {
+  app.listen(PORT, () => {
+    console.log(`[SERVER] Đang chạy tại cổng ${PORT} (Environment: ${process.env.NODE_ENV || 'development'})`);
   });
-};
-
-if (require.main === module) {
-  startServer();
-}
-
-module.exports = app;
+}).catch((err) => {
+  console.error('[SERVER] Lỗi khởi động máy chủ:', err.message);
+  process.exit(1);
+});
