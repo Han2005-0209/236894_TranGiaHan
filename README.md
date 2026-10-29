@@ -1,4 +1,4 @@
-﻿# Hệ thống quản lý món ăn trên nền tảng đám mây
+# Hệ thống quản lý món ăn trên nền tảng đám mây
 
 **Học phần:** Điện toán đám mây
 **Sinh viên thực hiện:** Trần Gia Hân
@@ -14,16 +14,16 @@
 
 - **Frontend:** React (Vite), Axios, CSS
 - **Backend:** Node.js, Express, Mongoose, CORS, dotenv
-- **Cơ sở dữ liệu:** MongoDB Atlas (Database: \236894_TranGiaHan\, Collection: \oods\)
+- **Cơ sở dữ liệu:** MongoDB Atlas (Database: `236894_TranGiaHan`, Collection: `foods`)
 - **Containerization:** Docker, Docker Compose, Nginx
-- **Container Registry:** Docker Hub (\	rangiahan2005/backend\, \	rangiahan2005/frontend\)
+- **Container Registry:** Docker Hub (`trangiahan2005/backend`, `trangiahan2005/frontend`)
 - **Cloud Deployment:** Render (Web Service Backend & Frontend)
 
 ---
 
 ## 2. Cấu trúc thư mục
 
-\\\	ext
+```text
 236894_TranGiaHan/
 ├── .gitignore
 ├── README.md
@@ -51,7 +51,7 @@
     ├── routes/
     │   └── foodRoutes.js
     └── seed.js
-\\\
+```
 
 ---
 
@@ -65,21 +65,37 @@
 ### Chạy trực tiếp (Local Development)
 
 1. **Khởi chạy Backend:**
-   \\\ash
+   ```bash
    cd server
    npm install
-   # Tạo file .env với cổng và chuỗi kết nối MongoDB Atlas
    npm start
-   \\\
-   Backend chạy tại: \http://localhost:5000\
+   ```
+   Backend chạy tại: `http://localhost:5000`
 
 2. **Khởi chạy Frontend:**
-   \\\ash
+   ```bash
    cd client
    npm install
    npm run dev
-   \\\
-   Frontend chạy tại: \http://localhost:5173\
+   ```
+   Frontend chạy tại: `http://localhost:5173`
+
+### Chạy Backend bằng Docker
+
+1. **Kéo image từ Docker Hub:**
+   ```bash
+   docker pull trangiahan2005/backend:latest
+   ```
+
+2. **Chạy container backend:**
+   ```bash
+   docker run -d --name food-backend -p 5000:5000 \
+     -e PORT=5000 \
+     -e MONGODB_URI="mongodb+srv://<username>:<password>@cluster0.7q3oxm1.mongodb.net/?retryWrites=true&w=majority" \
+     -e MONGODB_DB_NAME="236894_TranGiaHan" \
+     trangiahan2005/backend:latest
+   ```
+   Kiểm tra trạng thái tại: `http://localhost:5000/health`
 
 ---
 
@@ -89,7 +105,7 @@
 |---|---|
 | **Link_GitHub** | https://github.com/Han2005-0209/236894_TranGiaHan |
 | **Link_Docker_Backend** | https://hub.docker.com/r/trangiahan2005/backend |
-| **Link_Docker_Frontend** | https://hub.docker.com/r/trangiahan2005/frontend |
+| **Link_Docker_Frontend** | Sẽ cập nhật sau khi push Câu 6 |
 | **Link_Render_App** | Sẽ cập nhật sau khi hoàn thành triển khai |
 | **Link_Render_API** | Sẽ cập nhật sau khi hoàn thành triển khai |
 | **Link_Data_MongoDB** | Database: 236894_TranGiaHan, Collection: foods |
