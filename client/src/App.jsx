@@ -439,8 +439,8 @@ function App() {
               <div className="form-group">
                 <label>Đường dẫn hình ảnh (imageUrl)</label>
                 <input
-                  type="url"
-                  placeholder="https://images.unsplash.com/..."
+                  type="text"
+                  placeholder="https://images.unsplash.com/... hoặc /images/..."
                   value={formData.imageUrl}
                   onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
                 />

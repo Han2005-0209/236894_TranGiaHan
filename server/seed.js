@@ -13,7 +13,7 @@ const sampleFoods = [
     price: 55000,
     quantity: 50,
     description: 'Phở bò truyền thống Hà Nội với nước dùng trong, ngọt thanh từ xương bò hầm nhiều giờ kết hợp thịt bò tươi ngon.',
-    imageUrl: 'https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?w=500',
+    imageUrl: '/images/pho-bo.jpg',
   },
   {
     foodId: 'F02',
@@ -24,7 +24,7 @@ const sampleFoods = [
     price: 60000,
     quantity: 40,
     description: 'Món bún bò đặc sản cố đô Huế với hương vị đậm đà cay nồng của sả ớt và mắm ruốc truyền thống.',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/0/00/Bun-Bo-Hue-from-Huong-Giang-2011.jpg',
+    imageUrl: '/images/bun-bo-hue.jpg',
   },
   {
     foodId: 'F03',
@@ -35,7 +35,7 @@ const sampleFoods = [
     price: 50000,
     quantity: 65,
     description: 'Cơm tấm đặc sản Sài Gòn với sườn nướng than thơm lừng, chả trứng béo ngậy và nước mắm chua ngọt đậm đà.',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/8/8e/Com-Tam-2008.jpg',
+    imageUrl: '/images/com-tam.jpg',
   },
   {
     foodId: 'F04',
@@ -46,7 +46,7 @@ const sampleFoods = [
     price: 35000,
     quantity: 80,
     description: 'Món khai vị thanh mát gồm tôm thịt luộc cuộn cùng rau sống tươi giòn và bún, chấm cùng tương đậu phộng.',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/e/e9/Spring_rolls_with_peanut_sauce.jpg',
+    imageUrl: '/images/goi-cuon.jpg',
   },
 ];
 
