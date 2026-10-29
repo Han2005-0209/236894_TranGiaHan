@@ -129,7 +129,7 @@ Dự án hỗ trợ Render Blueprint (`render.yaml`). Khi liên kết repository
 
 ---
 
-## 4. Bảng thông tin nộp bài
+## 4. Bảng thông tin nộp bài (Mục V - Biểu mẫu đề thi)
 
 | Trường thông tin | Nội dung cung cấp |
 |---|---|
@@ -139,3 +139,5 @@ Dự án hỗ trợ Render Blueprint (`render.yaml`). Khi liên kết repository
 | **Link_Render_App** | https://web-236894.onrender.com |
 | **Link_Render_API** | https://api-236894.onrender.com |
 | **Link_Data_MongoDB** | Database: 236894_TranGiaHan, Collection: foods |
+
+**Biểu mẫu nộp bài:** [Google Form Nộp Bài Thực Hành ĐTĐM](https://docs.google.com/forms/d/e/1FAIpQLSc6p2I6a-D8EhovwGKEsi4jxoUC7RtcSRQps8_VysECi5jziw/viewform)
