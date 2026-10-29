@@ -120,8 +120,12 @@ docker compose up -d
 ### Triển khai trên nền tảng đám mây Render
 
 Dự án hỗ trợ Render Blueprint (`render.yaml`). Khi liên kết repository với Render:
-1. **Frontend Web Service:** Dịch vụ `web-236894` triển khai Static Site từ thư mục `client/` với URL công khai: `https://web-236894.onrender.com`
-2. **Backend API Service:** Dịch vụ `api-236894` triển khai Web Service Node.js từ thư mục `server/` với URL công khai: `https://api-236894.onrender.com`
+1. **Frontend Web Service:** Dịch vụ `web-236894` triển khai Static Site từ thư mục `client/` với URL công khai:
+   `https://web-236894.onrender.com`
+2. **Backend API Service:** Dịch vụ `api-236894` triển khai Web Service Node.js từ thư mục `server/` với URL công khai:
+   `https://api-236894.onrender.com`
+   - Endpoint kiểm tra sức khỏe: `https://api-236894.onrender.com/health`
+   - Endpoint danh sách món ăn: `https://api-236894.onrender.com/api/foods`
 
 ---
 
@@ -133,5 +137,5 @@ Dự án hỗ trợ Render Blueprint (`render.yaml`). Khi liên kết repository
 | **Link_Docker_Backend** | https://hub.docker.com/r/trangiahan2005/backend |
 | **Link_Docker_Frontend** | https://hub.docker.com/r/trangiahan2005/frontend |
 | **Link_Render_App** | https://web-236894.onrender.com |
-| **Link_Render_API** | Sẽ cập nhật sau khi hoàn thành triển khai Câu 8 |
+| **Link_Render_API** | https://api-236894.onrender.com |
 | **Link_Data_MongoDB** | Database: 236894_TranGiaHan, Collection: foods |
