@@ -28,6 +28,7 @@
 ├── .gitignore
 ├── README.md
 ├── docker-compose.yml
+├── render.yaml
 ├── client/
 │   ├── index.html
 │   ├── package.json
@@ -116,6 +117,12 @@
 docker compose up -d
 ```
 
+### Triển khai trên nền tảng đám mây Render
+
+Dự án hỗ trợ Render Blueprint (`render.yaml`). Khi liên kết repository với Render:
+1. **Frontend Web Service:** Dịch vụ `web-236894` triển khai Static Site từ thư mục `client/` với URL công khai: `https://web-236894.onrender.com`
+2. **Backend API Service:** Dịch vụ `api-236894` triển khai Web Service Node.js từ thư mục `server/` với URL công khai: `https://api-236894.onrender.com`
+
 ---
 
 ## 4. Bảng thông tin nộp bài
@@ -125,6 +132,6 @@ docker compose up -d
 | **Link_GitHub** | https://github.com/Han2005-0209/236894_TranGiaHan |
 | **Link_Docker_Backend** | https://hub.docker.com/r/trangiahan2005/backend |
 | **Link_Docker_Frontend** | https://hub.docker.com/r/trangiahan2005/frontend |
-| **Link_Render_App** | Sẽ cập nhật sau khi hoàn thành triển khai |
-| **Link_Render_API** | Sẽ cập nhật sau khi hoàn thành triển khai |
+| **Link_Render_App** | https://web-236894.onrender.com |
+| **Link_Render_API** | Sẽ cập nhật sau khi hoàn thành triển khai Câu 8 |
 | **Link_Data_MongoDB** | Database: 236894_TranGiaHan, Collection: foods |
